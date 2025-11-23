@@ -21,5 +21,7 @@ val LightColorPalette = AppColors(
     onSurfaceDark = Color(0xFF202020),
     onSurfaceLight = Color(0xFFD1D1D1),
 
-    delete = Color(0xFFFF0000)
+    delete = Color(0xFFFF0000),
+    edit = Color(0XFF1EA7FF),
+    success = Color(0xFF12B76A)
 )

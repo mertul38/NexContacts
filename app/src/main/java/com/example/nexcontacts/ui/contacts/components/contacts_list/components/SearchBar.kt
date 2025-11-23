@@ -11,28 +11,39 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.focus.onFocusChanged
 import com.example.nexcontacts.R
 import com.example.nexcontacts.ui.theme.AppTheme
 
 @Composable
 fun SearchBar(
     value: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    onFocusChanged: (Boolean) -> Unit
 ) {
+    var isFocused by remember { mutableStateOf(false) }
+
     TextField(
         value = value,
         onValueChange = onValueChange,
+
+        // 🔥 ICON HER ZAMAN GÖRÜNÜR BURADA
+        leadingIcon = {
+            Icon(
+                painter = painterResource(id = R.drawable.search),
+                contentDescription = null,
+                tint = Color.Gray,
+                modifier = Modifier.size(18.dp)
+            )
+        },
+
+        // Placeholder sadece yazı yoksa görünür
         placeholder = {
-            Row(
-                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.search),
-                    contentDescription = null,
-                    tint = Color.Gray,
-                    modifier = Modifier.size(18.dp)
-                )
-                Spacer(Modifier.width(8.dp))
+            if (value.isEmpty()) {
                 Text(
                     text = "Search by name",
                     color = Color.Gray,
@@ -40,11 +51,19 @@ fun SearchBar(
                 )
             }
         },
+
         singleLine = true,
+
         modifier = Modifier
             .fillMaxWidth()
-            .height(48.dp),
+            .height(48.dp)
+            .onFocusChanged { state ->
+                isFocused = state.isFocused
+                onFocusChanged(state.isFocused)
+            },
+
         shape = RoundedCornerShape(12.dp),
+
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.White,
             unfocusedContainerColor = Color.White,
@@ -58,6 +77,7 @@ fun SearchBar(
             focusedTextColor = Color.Black,
             unfocusedTextColor = Color.Black,
         ),
+
         textStyle = AppTheme.typography.labelLarge
     )
 }

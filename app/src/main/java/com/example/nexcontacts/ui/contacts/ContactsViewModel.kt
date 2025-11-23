@@ -24,9 +24,6 @@ class ContactsViewModel : ViewModel() {
         loadRemoteUsers()
     }
 
-    // --------------------------------------------------------
-    // FETCH REMOTE USERS
-    // --------------------------------------------------------
     private fun loadRemoteUsers() {
         viewModelScope.launch {
             state = state.copy(isLoading = true)
@@ -42,47 +39,50 @@ class ContactsViewModel : ViewModel() {
         }
     }
 
-    // --------------------------------------------------------
-    // SEARCH
-    // --------------------------------------------------------
     fun onSearchChanged(query: String) {
         state = state.copy(search = query)
         applySearchAndGrouping(query, state.users)
     }
 
     private fun applySearchAndGrouping(query: String, users: List<User>) {
-        val filtered = if (query.isBlank()) {
-            users
-        } else {
+
+        val filtered = if (query.isBlank()) users else {
             users.filter {
-                "${it.firstName} ${it.lastName}"
-                    .lowercase()
-                    .contains(query.lowercase())
+                "${it.firstName} ${it.lastName}".lowercase().contains(query.lowercase())
             }
         }
 
-        val grouped = filtered
-            .sortedBy { it.firstName.lowercase() }
-            .groupBy { it.firstName.first().uppercaseChar() }
+        val grouped = if (query.isBlank()) {
+            filtered
+                .sortedBy { it.firstName.lowercase() }
+                .groupBy { it.firstName.first().uppercaseChar() }
+        } else {
+            emptyMap()
+        }
 
         state = state.copy(
-            groupedUsers = grouped
+            groupedUsers = grouped,
+            searchResults = filtered
         )
     }
 
-    // --------------------------------------------------------
-    // NAVIGATION
-    // --------------------------------------------------------
+    fun deleteUser(user: User) {
+        viewModelScope.launch {
+            repo.deleteUser(user)
+            val updated = state.users.filter { it.id != user.id }
+            state = state.copy(users = updated)
+            applySearchAndGrouping(state.search, updated)
+        }
+    }
+
     fun onContactClicked(user: User) {
         event = ContactsEvent.NavigateToProfile(user.id)
     }
 
-    fun consumeEvent() {
-        event = null
+    fun onEditContact(user: User) {
+        event = ContactsEvent.NavigateToProfile(user.id, editModeOpen = true)
     }
 
-    fun refresh() {
-        loadRemoteUsers()
-    }
-
+    fun consumeEvent() { event = null }
+    fun refresh() { loadRemoteUsers() }
 }

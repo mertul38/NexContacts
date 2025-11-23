@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.nexcontacts.data.di.ServiceLocator
+import com.example.nexcontacts.ui.common.SnackbarController
 import com.example.nexcontacts.utils.ImageUtils
 import kotlinx.coroutines.launch
 
@@ -42,6 +43,11 @@ class ProfileScreenViewModel(application: Application) : AndroidViewModel(applic
         state.value = state.value.copy(editMode = !state.value.editMode)
     }
 
+    fun openEditMode() {
+        if (!state.value.editMode)
+            state.value = state.value.copy(editMode = true)
+    }
+
     fun updatePhoto(newUri: String) {
         state.value = state.value.copy(newPhotoUri = newUri)
     }
@@ -75,6 +81,7 @@ class ProfileScreenViewModel(application: Application) : AndroidViewModel(applic
                 val user = state.value.user ?: return@launch
                 repo.deleteUser(user)
                 onSuccess()
+                SnackbarController.show("User is deleted!")
             } catch (e: Exception) {
                 e.printStackTrace()
                 onError(e.message ?: "Delete failed")
@@ -111,8 +118,10 @@ class ProfileScreenViewModel(application: Application) : AndroidViewModel(applic
                 )
 
                 _event.value = ProfileEvent.NavigateBack
+                SnackbarController.show("User is updated!")
 
-            } catch (e: Exception) {
+            }
+            catch (e: Exception) {
                 e.printStackTrace()
                 _event.value = ProfileEvent.ShowError(e.message ?: "Update failed")
             }

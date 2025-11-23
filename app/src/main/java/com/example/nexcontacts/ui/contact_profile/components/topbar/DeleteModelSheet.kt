@@ -1,5 +1,6 @@
 package com.example.nexcontacts.ui.contact_profile.components.topbar
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -25,7 +26,8 @@ fun DeleteModalSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp),
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -56,7 +58,8 @@ fun DeleteModalSheet(
                     modifier = Modifier
                         .weight(1f)
                         .height(48.dp),
-                    shape = RoundedCornerShape(50)   // very rounded
+                    shape = RoundedCornerShape(50),
+                    border = BorderStroke(1.dp, AppTheme.colors.textFifth)
                 ) {
                     Text("No",
                         style = AppTheme.typography.bodySmall,

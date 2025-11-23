@@ -22,9 +22,16 @@ import com.example.nexcontacts.utils.ImageUtils
 @Composable
 fun ProfileScreen(
     userId: String,
+    editModeOpen: Boolean,
     onCancel: () -> Unit,
     viewModel: ProfileScreenViewModel = viewModel()
 ) {
+    LaunchedEffect(editModeOpen) {
+        if (editModeOpen) {
+            viewModel.openEditMode()
+        }
+    }
+
     val state by viewModel.state
 
     var showRemoveSheet by remember { mutableStateOf(false) }

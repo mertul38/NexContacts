@@ -69,7 +69,7 @@ fun AddContactScreen(
                 onCancel = onCancel,
                 onDone = {
                     viewModel.onDone(
-                        context = context, // burada gönderiyoruz
+                        context = context,
                         onSuccess = onDone,
                         onError = { msg -> scope.launch { snackbarHostState.showSnackbar(msg) } }
                     )

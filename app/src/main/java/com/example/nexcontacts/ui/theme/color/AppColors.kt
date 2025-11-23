@@ -16,5 +16,7 @@ data class AppColors(
     val error: Color,
     val onSurfaceDark: Color,
     val onSurfaceLight: Color,
-    val delete: Color
+    val delete: Color,
+    val edit: Color,
+    val success: Color
 )
