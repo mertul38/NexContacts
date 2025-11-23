@@ -52,7 +52,7 @@ fun DeleteModalSheet(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
 
-                // NO (Outlined)
+
                 OutlinedButton(
                     onClick = onCancelClicked,
                     modifier = Modifier
@@ -67,7 +67,7 @@ fun DeleteModalSheet(
                     )
                 }
 
-                // YES (Filled)
+
                 Button(
                     onClick = onDeleteClicked,
                     modifier = Modifier
@@ -76,7 +76,7 @@ fun DeleteModalSheet(
                     colors = ButtonDefaults.buttonColors(
                         containerColor = AppTheme.colors.textFifth
                     ),
-                    shape = RoundedCornerShape(50)   // very rounded
+                    shape = RoundedCornerShape(50)
                 ) {
                     Text("Yes",
                         style = AppTheme.typography.bodySmall,

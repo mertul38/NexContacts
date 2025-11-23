@@ -27,7 +27,6 @@ fun SearchHistorySection(
     Column(
         Modifier.background(Color.Transparent)
     ) {
-        // HEADER
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -56,7 +55,6 @@ fun SearchHistorySection(
                 .background(Color.White, RoundedCornerShape(12.dp))
                 .padding(12.dp)
         ) {
-            // HISTORY LIST
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {

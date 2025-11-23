@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 
-// Locals (global erişim noktası)
+
 val LocalAppColors = staticCompositionLocalOf { LightColorPalette }
 val LocalAppTypography = staticCompositionLocalOf { LightTypography }
 

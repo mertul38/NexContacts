@@ -40,31 +40,28 @@ fun ContactAvatar(
         contentAlignment = Alignment.Center
     ) {
         when {
-            // --- LOCAL PHOTO ---
             !localPath.isNullOrBlank() -> {
                 AsyncImage(
                     model = File(localPath),
                     contentDescription = null,
-                    contentScale = ContentScale.Crop,   // fill & crop
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxSize()
                         .clip(CircleShape)
                 )
             }
 
-            // --- REMOTE PHOTO ---
             !remoteUrl.isNullOrBlank() -> {
                 AsyncImage(
                     model = remoteUrl,
                     contentDescription = null,
-                    contentScale = ContentScale.Crop,   // fill & crop
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxSize()
                         .clip(CircleShape)
                 )
             }
 
-            // --- FALLBACK LETTER AVATAR ---
             else -> {
                 Text(
                     text = fallbackLetter,

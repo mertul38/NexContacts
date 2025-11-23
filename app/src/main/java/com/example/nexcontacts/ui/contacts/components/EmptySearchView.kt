@@ -36,7 +36,7 @@ fun EmptySearchView(
             modifier = Modifier
                 .size(96.dp)
                 .background(
-                    color = colors.onSurfaceLight,   // Outer circle color
+                    color = colors.onSurfaceLight,
                     shape = CircleShape
                 ),
             contentAlignment = Alignment.Center
@@ -44,15 +44,14 @@ fun EmptySearchView(
             Icon(
                 painter = painterResource(id = R.drawable.search_not_found),
                 contentDescription = null,
-                tint = Color.White,                  // Icon is WHITE
-                modifier = Modifier.size(56.dp)      // Icon size 56×56
+                tint = Color.White,
+                modifier = Modifier.size(56.dp)
             )
         }
 
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Title
         Text(
             text = "No Results",
             style = typography.headlineLarge
@@ -60,7 +59,6 @@ fun EmptySearchView(
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        // Subtitle
         Text(
             text = "The user you are looking forcould not be\nfound.",
             textAlign = TextAlign.Center,

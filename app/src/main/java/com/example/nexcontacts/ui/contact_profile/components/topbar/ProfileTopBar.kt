@@ -39,11 +39,7 @@ fun ProfileTopBar(
     ) {
 
         if (!editMode) {
-            // --- VIEW MODE ---
             Spacer(Modifier.weight(1f))
-
-
-            // 3 DOT MENU
 
             Box(
                 modifier = Modifier.wrapContentSize(Alignment.TopEnd)
@@ -64,7 +60,6 @@ fun ProfileTopBar(
                         .background(Color.White, shape = RoundedCornerShape(12.dp))
                 ) {
 
-                    // EDIT ROW
                     DropdownMenuItem(
                         text = {
                             Row(
@@ -94,14 +89,12 @@ fun ProfileTopBar(
                         modifier = Modifier.background(Color.White)
                     )
 
-                    // Gray divider line
                     Divider(
                         color = Color(0xFFE0E0E0),
                         thickness = 1.dp,
                         modifier = Modifier.padding(horizontal = 8.dp)
                     )
 
-                    // DELETE ROW
                     DropdownMenuItem(
                         text = {
                             Row(
@@ -126,7 +119,7 @@ fun ProfileTopBar(
                         },
                         onClick = {
                             menuExpanded = false
-                            onRemoveClicked()   // Function name stays same
+                            onRemoveClicked()
                         },
                         modifier = Modifier.background(Color.White)
                     )
@@ -136,7 +129,6 @@ fun ProfileTopBar(
 
 
         } else {
-            // --- EDIT MODE ---
             Text(
                 text = "Cancel",
                 color = AppTheme.colors.primary,

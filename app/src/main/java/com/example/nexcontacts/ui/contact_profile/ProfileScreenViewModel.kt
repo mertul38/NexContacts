@@ -19,9 +19,9 @@ class ProfileScreenViewModel(application: Application) : AndroidViewModel(applic
     private val _event = mutableStateOf<ProfileEvent?>(null)
     val event get() = _event
 
-    // --------------------------------------------------------
-    // LOAD USER (REMOTE ONLY)
-    // --------------------------------------------------------
+
+
+
     fun loadUser(id: String) {
         viewModelScope.launch {
             state.value = state.value.copy(isLoading = true)
@@ -36,9 +36,7 @@ class ProfileScreenViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
-    // --------------------------------------------------------
-    // UI State Updates (Primitive Only)
-    // --------------------------------------------------------
+
     fun toggleEditMode() {
         state.value = state.value.copy(editMode = !state.value.editMode)
     }
@@ -68,9 +66,7 @@ class ProfileScreenViewModel(application: Application) : AndroidViewModel(applic
         state.value = state.value.copy(user = u.copy(phoneNumber = value))
     }
 
-    // --------------------------------------------------------
-    // DELETE USER (REMOTE ONLY)
-    // --------------------------------------------------------
+
     fun removeUser(
         id: String,
         onSuccess: () -> Unit,
@@ -89,9 +85,7 @@ class ProfileScreenViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
-    // --------------------------------------------------------
-    // SAVE CHANGES (REMOTE ONLY)
-    // --------------------------------------------------------
+
     fun saveChanges() {
         val user = state.value.user ?: return
 
@@ -108,7 +102,7 @@ class ProfileScreenViewModel(application: Application) : AndroidViewModel(applic
                     firstName = user.firstName,
                     lastName = user.lastName,
                     phone = user.phoneNumber,
-                    newImageFile = imageFile   // <-- ARTIK NULL DEĞİL
+                    newImageFile = imageFile
                 )
 
                 state.value = state.value.copy(

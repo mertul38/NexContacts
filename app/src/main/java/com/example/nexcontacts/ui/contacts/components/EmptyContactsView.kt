@@ -27,7 +27,6 @@ fun EmptyContactsView(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        // Avatar icon
         Icon(
             painter = painterResource(id = R.drawable.empty_avatar),
             contentDescription = null,
@@ -37,7 +36,6 @@ fun EmptyContactsView(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Title
         Text(
             text = "No Contacts",
             style = typography.headlineLarge
@@ -45,7 +43,6 @@ fun EmptyContactsView(
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        // Subtitle
         Text(
             text = "Contacts you’ve added will appear here.",
             style = typography.bodyMedium,
@@ -54,7 +51,6 @@ fun EmptyContactsView(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Button-like link text
         Text(
             text = "Create New Contact",
             style = typography.bodyLarge,

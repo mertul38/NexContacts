@@ -48,7 +48,7 @@ fun SwipeableContactItem(
     onDelete: (User) -> Unit,
     onClick: (User) -> Unit
 ) {
-    val swipeWidth = 112.dp     // Edit 56 + Delete 56
+    val swipeWidth = 112.dp
     val swipePx = with(LocalDensity.current) { swipeWidth.toPx() }
 
     val anchors = mapOf(
@@ -70,14 +70,13 @@ fun SwipeableContactItem(
             )
     ) {
 
-        // BACKGROUND BUTTONS
         Row(
             Modifier.fillMaxSize(),
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            // EDIT
+
             Box(
                 modifier = Modifier
                     .width(56.dp)
@@ -94,7 +93,6 @@ fun SwipeableContactItem(
                 )
             }
 
-            // DELETE
             Box(
                 modifier = Modifier
                     .width(56.dp)
@@ -112,7 +110,6 @@ fun SwipeableContactItem(
             }
         }
 
-        // FOREGROUND (swipeable content)
         Box(
             Modifier
                 .offset { IntOffset(swipeState.offset.value.toInt(), 0) }

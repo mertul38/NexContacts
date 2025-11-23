@@ -19,7 +19,6 @@ class UserRemoteDataSource(
     suspend fun update(id: String, body: UpdateUserRequest) = api.updateUser(id, body)
     suspend fun delete(id: String) = api.deleteUser(id)
 
-    // ✅ Yeni eklendi — dosya upload işlemi
     suspend fun uploadImage(file: File): UploadImageResponse? {
         val body = MultipartBody.Part.createFormData(
             name = "image",

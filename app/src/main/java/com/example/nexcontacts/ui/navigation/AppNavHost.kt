@@ -25,7 +25,7 @@ fun AppNavHost(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
-    
+
     SnackbarController.init(snackbarHostState, scope)
 
     Scaffold(
@@ -42,7 +42,7 @@ fun AppNavHost(
             modifier = Modifier.padding(padding)
         ) {
 
-            // CONTACT LIST
+
             composable(Routes.CONTACTS) {
                 ContactsScreen(
                     onAddClicked = {
@@ -54,7 +54,7 @@ fun AppNavHost(
                 )
             }
 
-            // ADD CONTACT
+
             composable(Routes.ADD_CONTACT) {
                 AddContactScreen(
                     onCancel = { navController.popBackStack() },
@@ -65,12 +65,12 @@ fun AppNavHost(
                 )
             }
 
-            // SUCCESS SCREEN (after add)
+
             composable(Routes.SUCCESS) {
                 SuccessScreen(navController)
             }
 
-            // PROFILE SCREEN — userId parameter required
+
             composable(Routes.PROFILE) { backStackEntry ->
 
                 val userId = backStackEntry.arguments?.getString("userId") ?: ""

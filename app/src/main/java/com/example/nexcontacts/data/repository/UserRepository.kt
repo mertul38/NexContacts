@@ -11,9 +11,6 @@ class UserRepository(
     private val remote: UserRemoteDataSource
 ) {
 
-    // -------------------------------------------------------
-    // Get All Users (REMOTE ONLY)
-    // -------------------------------------------------------
     suspend fun getUsers(): List<User> {
         val res = remote.fetchAll()
         if (!res.success || res.data == null) return emptyList()
@@ -23,9 +20,6 @@ class UserRepository(
         }
     }
 
-    // -------------------------------------------------------
-    // Create User
-    // -------------------------------------------------------
     suspend fun createUser(
         firstName: String,
         lastName: String,
@@ -33,7 +27,6 @@ class UserRepository(
         imageFile: File?
     ): User? {
 
-        // 1) Create basic user
         val createReq = CreateUserRequest(firstName, lastName, phone, null)
         val createRes = remote.create(createReq)
         if (!createRes.success || createRes.data == null) return null
@@ -41,12 +34,10 @@ class UserRepository(
         val userDto = createRes.data
         var uploadedUrl: String? = null
 
-        // 2) Upload image if provided
         if (imageFile != null) {
             val uploadRes = remote.uploadImage(imageFile)
             uploadedUrl = uploadRes?.data?.imageUrl
 
-            // Update user on backend with profile image URL
             if (!uploadedUrl.isNullOrEmpty()) {
                 val updateReq = UpdateUserRequest(
                     firstName = firstName,
@@ -58,15 +49,12 @@ class UserRepository(
             }
         }
 
-        // 3) Convert to domain
         return userDto.copy(
             profileImageUrl = uploadedUrl ?: userDto.profileImageUrl
         ).toDomain(localPath = null)
     }
 
-    // -------------------------------------------------------
-    // Update User
-    // -------------------------------------------------------
+
     suspend fun updateUser(
         user: User,
         firstName: String,
@@ -77,13 +65,11 @@ class UserRepository(
 
         var finalImageUrl = user.remoteImageUrl
 
-        // 1) Upload new image if exists
         if (newImageFile != null) {
             val uploadRes = remote.uploadImage(newImageFile)
             finalImageUrl = uploadRes?.data?.imageUrl ?: user.remoteImageUrl
         }
 
-        // 2) Backend update
         val req = UpdateUserRequest(
             firstName = firstName,
             lastName = lastName,
@@ -97,9 +83,8 @@ class UserRepository(
         return res.data.toDomain(localPath = null)
     }
 
-    // -------------------------------------------------------
-    // Delete User
-    // -------------------------------------------------------
+
+
     suspend fun deleteUser(user: User) {
         remote.delete(user.id)
     }

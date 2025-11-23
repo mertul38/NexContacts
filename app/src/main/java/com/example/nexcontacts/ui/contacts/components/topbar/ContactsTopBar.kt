@@ -24,7 +24,6 @@ fun ContactsTopBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        // Title
         Text(
             text = "Contacts",
             style = AppTheme.typography.headlineLarge,
@@ -33,7 +32,6 @@ fun ContactsTopBar(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        // Plus Circle Icon Button
         Icon(
             painter = painterResource(id = R.drawable.plus_circle),
             contentDescription = "Add Contact",

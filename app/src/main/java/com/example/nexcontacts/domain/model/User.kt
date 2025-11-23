@@ -11,7 +11,7 @@ data class User(
     val firstName: String,
     val lastName: String,
     val phoneNumber: String,
-    val remoteImageUrl: String?,     // URL from backend
-    val localImagePath: String?      // File saved on device
+    val remoteImageUrl: String?,
+    val localImagePath: String?
 )
 

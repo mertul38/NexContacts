@@ -24,18 +24,17 @@ import com.example.nexcontacts.utils.ImageUtils
 import kotlin.math.exp
 
 
-// ---- Gaussian Halo Generator ----
 private fun generateHaloGlow(color: Color, steps: Int = 40): List<Color> {
     return List(steps) { i ->
         val t = i.toFloat() / (steps - 1)
 
-        // Gaussian bell curve centered at 0.5 (perfect halo)
+
         val center = 0.5f
         val sigma = 0.22f
 
         val gaussian = exp(-((t - center) * (t - center)) / (2f * sigma * sigma))
 
-        val alpha = gaussian * 0.40f  // intensity scaling
+        val alpha = gaussian * 0.40f
 
         color.copy(alpha = alpha)
     } + Color.Transparent
@@ -60,11 +59,11 @@ fun CommonInputPhotoSection(
         }
     }
 
-    // Glow optimized for 96.dp image
+
     val glowBrush = remember(dominantColor) {
         Brush.radialGradient(
             colors = generateHaloGlow(dominantColor),
-            radius = 240f   // scaled from 300f
+            radius = 240f
         )
     }
 
@@ -73,16 +72,16 @@ fun CommonInputPhotoSection(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        // OUTER GLOW AREA (halo ring)
+
         Box(
             modifier = Modifier
-                .size(140.dp)      // scaled down from 150dp
+                .size(140.dp)
                 .clip(CircleShape)
                 .background(glowBrush),
             contentAlignment = Alignment.Center
         ) {
 
-            // PHOTO (96.dp cropped)
+
             Box(
                 modifier = Modifier
                     .size(96.dp)

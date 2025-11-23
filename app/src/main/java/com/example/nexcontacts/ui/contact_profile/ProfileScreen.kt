@@ -37,7 +37,7 @@ fun ProfileScreen(
     var showRemoveSheet by remember { mutableStateOf(false) }
     var showPhotoPicker by remember { mutableStateOf(false) }
 
-    val user = state.user     // <-- user artık tüm composable boyunca var
+    val user = state.user
 
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
@@ -46,7 +46,7 @@ fun ProfileScreen(
     LaunchedEffect(event) {
         when (event) {
             ProfileEvent.NavigateBack -> {
-                onCancel()   // ContactsScreen'e dön
+                onCancel()
                 viewModel.consumeEvent()
             }
             is ProfileEvent.ShowError -> {
@@ -61,7 +61,6 @@ fun ProfileScreen(
         viewModel.loadUser(userId)
     }
 
-    // CAMERA launcher
     val cameraUri = remember { mutableStateOf<Uri?>(null) }
     val cameraLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.TakePicture()
@@ -71,7 +70,6 @@ fun ProfileScreen(
         }
     }
 
-    // GALLERY launcher
     val galleryLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri ->
@@ -134,7 +132,7 @@ fun ProfileScreen(
         }
     }
 
-    // --- REMOVE SHEET ---
+
     if (showRemoveSheet && user != null) {
         DeleteModalSheet(
             onDeleteClicked = {

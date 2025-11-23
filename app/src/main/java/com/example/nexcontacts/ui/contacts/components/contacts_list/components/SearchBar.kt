@@ -31,7 +31,6 @@ fun SearchBar(
         value = value,
         onValueChange = onValueChange,
 
-        // 🔥 ICON HER ZAMAN GÖRÜNÜR BURADA
         leadingIcon = {
             Icon(
                 painter = painterResource(id = R.drawable.search),
@@ -41,7 +40,7 @@ fun SearchBar(
             )
         },
 
-        // Placeholder sadece yazı yoksa görünür
+
         placeholder = {
             if (value.isEmpty()) {
                 Text(

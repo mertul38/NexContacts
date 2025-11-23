@@ -32,7 +32,6 @@ fun AddContactScreen(
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    // CAMERA launcher
     val cameraUri = remember { mutableStateOf<Uri?>(null) }
     val cameraLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.TakePicture()
@@ -42,7 +41,6 @@ fun AddContactScreen(
         }
     }
 
-    // GALLERY launcher
     val galleryLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri ->
@@ -63,7 +61,6 @@ fun AddContactScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // TOP BAR
             val context = LocalContext.current
             AddContactTopBar(
                 onCancel = onCancel,
@@ -78,7 +75,6 @@ fun AddContactScreen(
 
             Spacer(modifier = Modifier.height(64.dp))
 
-            // PHOTO SECTION (edit mode: always true)
             CommonInputPhotoSection(
                 photoUri = state.photoUri,
                 editMode = true,
@@ -87,7 +83,6 @@ fun AddContactScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // INFO SECTION (edit mode: always true)
             CommonInputInfoSection(
                 firstName = state.firstName,
                 lastName = state.lastName,
@@ -100,7 +95,7 @@ fun AddContactScreen(
         }
     }
 
-    // PHOTO PICKER BOTTOM SHEET
+
     CommonPhotoPickerBottomSheet(
         show = showPhotoPicker,
         onDismiss = { showPhotoPicker = false },

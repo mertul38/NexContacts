@@ -51,14 +51,13 @@ object ImageUtils {
         }
     }
 
-    // ✅ Kalıcı olarak dosya yazan versiyon
+
     fun uriToFile(context: Context, uriString: String, userId: String? = null): File? {
         return try {
             val uri = Uri.parse(uriString)
             val inputStream = context.contentResolver.openInputStream(uri) ?: return null
             val targetDir = File(context.filesDir, "profile_photos").apply { mkdirs() }
 
-            // ✅ Eğer userId yoksa temp dosya oluştur
             val targetFile = if (!userId.isNullOrBlank()) {
                 File(targetDir, "$userId.jpg")
             } else {

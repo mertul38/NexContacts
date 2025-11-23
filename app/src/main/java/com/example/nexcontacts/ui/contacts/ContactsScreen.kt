@@ -1,5 +1,7 @@
 package com.example.nexcontacts.ui.contacts
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -10,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.nexcontacts.domain.model.User
@@ -27,6 +30,8 @@ fun ContactsScreen(
     onAddClicked: () -> Unit = {},
     onProfileClicked: (String, Boolean) -> Unit
 ) {
+    val focusManager = LocalFocusManager.current
+
     var showDeleteSheet by remember { mutableStateOf(false) }
     var userToDelete by remember { mutableStateOf<User?>(null) }
 
@@ -62,23 +67,29 @@ fun ContactsScreen(
         modifier = Modifier
             .padding(16.dp)
             .fillMaxSize()
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ) {
+                focusManager.clearFocus()
+                showHistory = false
+            }
     ) {
 
         Spacer(Modifier.height(24.dp))
         ContactsTopBar(onAddClicked)
         Spacer(Modifier.height(16.dp))
 
-        // 🔥 SearchBar focus handling
         SearchBar(
             value = state.search,
             onValueChange = { newValue ->
                 viewModel.onSearchChanged(newValue)
 
-                // Yazı doluyken history kapanır
+
                 if (newValue.isNotBlank()) {
                     showHistory = false
                 }
-                // Yazı boş + focus açık → history geri açılır
+
                 else if (newValue.isBlank() && isSearchFocused) {
                     showHistory = true
                 }
@@ -92,9 +103,7 @@ fun ContactsScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        // ========================================================
-        // 🔥 1. SEARCH HISTORY (öncelik 1)
-        // ========================================================
+
         if (showHistory) {
             SearchHistorySection(
                 history = mockHistory,
@@ -105,12 +114,10 @@ fun ContactsScreen(
                 onRemove = { /* TODO */ },
                 onClearAll = { /* TODO */ }
             )
-            return@Column // 🔥 diğer UI'leri göstermeyi kes!
+            return@Column
         }
 
-        // ========================================================
-        // 🔥 2. SEARCH MODE (öncelik 2)
-        // ========================================================
+
         if (state.search.isNotBlank()) {
 
             if (state.searchResults.isEmpty()) {
@@ -130,9 +137,7 @@ fun ContactsScreen(
             return@Column // 🔥 normal listeyi göstermeyi kes!
         }
 
-        // ========================================================
-        // 🔥 3. NORMAL MODE (en düşük öncelik)
-        // ========================================================
+
         if (grouped.isEmpty()) {
             EmptyContactsView(onAddClicked)
         } else {
@@ -155,7 +160,7 @@ fun ContactsScreen(
             onDeleteClicked = {
                 showDeleteSheet = false
 
-                // backend delete çağır
+
                 viewModel.deleteUser(userToDelete!!)
             },
             onCancelClicked = {

@@ -7,6 +7,6 @@ data class ProfileState(
     val error: String? = null,
     val user: User? = null,
     val editMode: Boolean = false,
-    val newPhotoUri: String? = null  // sadece local seçilmiş foto
+    val newPhotoUri: String? = null
 
 )

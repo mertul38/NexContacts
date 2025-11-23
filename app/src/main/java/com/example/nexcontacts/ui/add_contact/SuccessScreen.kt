@@ -16,7 +16,6 @@ import kotlinx.coroutines.delay
 @Composable
 fun SuccessScreen(navController: NavController) {
 
-    // Navigate to Contacts after 2 seconds
     LaunchedEffect(Unit) {
         delay(2000)
         navController.navigate("contacts") {
@@ -24,18 +23,17 @@ fun SuccessScreen(navController: NavController) {
         }
     }
 
-    // Load Lottie animation (Done.json in res/raw)
     val composition by rememberLottieComposition(
-        LottieCompositionSpec.RawRes(R.raw.done)   // <-- your Done.json file
+        LottieCompositionSpec.RawRes(R.raw.done)
     )
 
     val progress by animateLottieCompositionAsState(
         composition = composition,
-        iterations = 1,     // play once
+        iterations = 1,
         speed = 2.0f
     )
 
-    // UI Layout
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -45,7 +43,6 @@ fun SuccessScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            // Lottie animation
             LottieAnimation(
                 composition = composition,
                 progress = progress,
