@@ -19,9 +19,15 @@ fun ContactsScreen(
     onAddClicked: () -> Unit = {},
     onProfileClicked: (String) -> Unit
 ) {
+
+    LaunchedEffect(Unit) {
+        viewModel.refresh()
+    }
+
     val state = viewModel.state
     val grouped = state.groupedUsers
     val event = viewModel.event
+
 
     LaunchedEffect(event) {
         when (event) {
@@ -49,15 +55,6 @@ fun ContactsScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // ✔ Load button is back TODO otomatik fetch e gec (cache yapabilirsin)
-        Button(
-            onClick = { viewModel.loadUsers() },
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .fillMaxWidth()
-        ) {
-            Text("Load Contacts From API")
-        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -66,7 +63,9 @@ fun ContactsScreen(
         } else {
             ContactsList(
                 grouped,
-                onContactClicked = viewModel::onContactClicked)
+                onContactClicked = viewModel::onContactClicked
+            )
         }
     }
 }
+

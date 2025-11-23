@@ -109,7 +109,7 @@ fun CommonInputPhotoSection(
         }
 
         if (editMode) {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = if (photoUri == null) "Add Photo" else "Change Photo",
                 color = AppTheme.colors.primary,

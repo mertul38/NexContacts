@@ -1,115 +1,126 @@
 package com.example.nexcontacts.ui.contact_profile
 
+import android.app.Application
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.nexcontacts.data.remote.ApiResult
-import com.example.nexcontacts.data.remote.UserRepository
+import com.example.nexcontacts.data.di.ServiceLocator
+import com.example.nexcontacts.utils.ImageUtils
 import kotlinx.coroutines.launch
-import androidx.compose.runtime.State
 
-class ProfileScreenViewModel : ViewModel() {
+class ProfileScreenViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repo = UserRepository()
+    private val repo = ServiceLocator.userRepository
 
     var state = mutableStateOf(ProfileState())
         private set
+
     private val _event = mutableStateOf<ProfileEvent?>(null)
-    val event: State<ProfileEvent?> = _event
+    val event get() = _event
 
+    // --------------------------------------------------------
+    // LOAD USER (REMOTE ONLY)
+    // --------------------------------------------------------
     fun loadUser(id: String) {
-        state.value = state.value.copy(isLoading = true)
-
         viewModelScope.launch {
-            when (val result = repo.getUserById(id)) {
-                is ApiResult.Success -> {
-                    state.value = state.value.copy(
-                        user = result.data,
-                        isLoading = false
-                    )
-                }
-                is ApiResult.Error -> {
-                    state.value = state.value.copy(
-                        error = result.message,
-                        isLoading = false
-                    )
-                }
-            }
+            state.value = state.value.copy(isLoading = true)
+
+            val users = repo.getUsers()
+            val user = users.find { it.id == id }
+
+            state.value = state.value.copy(
+                user = user,
+                isLoading = false
+            )
         }
     }
 
+    // --------------------------------------------------------
+    // UI State Updates (Primitive Only)
+    // --------------------------------------------------------
+    fun toggleEditMode() {
+        state.value = state.value.copy(editMode = !state.value.editMode)
+    }
+
+    fun updatePhoto(newUri: String) {
+        state.value = state.value.copy(newPhotoUri = newUri)
+    }
+
+
+    fun updateFirstName(value: String) {
+        val u = state.value.user ?: return
+        state.value = state.value.copy(user = u.copy(firstName = value))
+    }
+
+    fun updateLastName(value: String) {
+        val u = state.value.user ?: return
+        state.value = state.value.copy(user = u.copy(lastName = value))
+    }
+
+    fun updatePhone(value: String) {
+        val u = state.value.user ?: return
+        state.value = state.value.copy(user = u.copy(phoneNumber = value))
+    }
+
+    // --------------------------------------------------------
+    // DELETE USER (REMOTE ONLY)
+    // --------------------------------------------------------
     fun removeUser(
         id: String,
         onSuccess: () -> Unit,
         onError: (String) -> Unit
     ) {
         viewModelScope.launch {
-            when (val result = repo.deleteUser(id)) {
-                is ApiResult.Success -> {
-                    onSuccess()
-                }
-                is ApiResult.Error -> {
-                    onError(result.message)
-                }
+            try {
+                val user = state.value.user ?: return@launch
+                repo.deleteUser(user)
+                onSuccess()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                onError(e.message ?: "Delete failed")
             }
         }
     }
 
-
-    fun toggleEditMode() {
-        state.value = state.value.copy(editMode = !state.value.editMode)
-    }
-
-    fun updatePhoto(newUri: String) {
-        val u = state.value.user ?: return
-        state.value = state.value.copy(
-            user = u.copy(profileImageUrl = newUri)
-        )
-    }
-
-    fun updateFirstName(value: String) {
-        state.value = state.value.copy(
-            user = state.value.user?.copy(firstName = value)
-        )
-    }
-
-    fun updateLastName(value: String) {
-        state.value = state.value.copy(
-            user = state.value.user?.copy(lastName = value)
-        )
-    }
-
-    fun updatePhone(value: String) {
-        state.value = state.value.copy(
-            user = state.value.user?.copy(phoneNumber = value)
-        )
-    }
-
+    // --------------------------------------------------------
+    // SAVE CHANGES (REMOTE ONLY)
+    // --------------------------------------------------------
     fun saveChanges() {
         val user = state.value.user ?: return
 
         viewModelScope.launch {
-            when (val result = repo.updateUser(
-                id = user.id,
-                firstName = user.firstName,
-                lastName = user.lastName,
-                phone = user.phoneNumber,
-                imageUrl = user.profileImageUrl
-            )) {
-                is ApiResult.Success -> {
-                    state.value = state.value.copy(editMode = false)
-                    _event.value = ProfileEvent.NavigateBack   // <<--- navigation sinyali
+            try {
+                val uri = state.value.newPhotoUri
+
+                val imageFile = uri?.let {
+                    ImageUtils.uriToFile(getApplication(), it)
                 }
-                is ApiResult.Error -> {
-                    _event.value = ProfileEvent.ShowError(result.message)
-                }
+
+                val updated = repo.updateUser(
+                    user = user,
+                    firstName = user.firstName,
+                    lastName = user.lastName,
+                    phone = user.phoneNumber,
+                    newImageFile = imageFile   // <-- ARTIK NULL DEĞİL
+                )
+
+                state.value = state.value.copy(
+                    user = updated,
+                    newPhotoUri = null,
+                    editMode = false
+                )
+
+                _event.value = ProfileEvent.NavigateBack
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _event.value = ProfileEvent.ShowError(e.message ?: "Update failed")
             }
         }
     }
 
+
     fun consumeEvent() {
         _event.value = null
     }
-
-
 }

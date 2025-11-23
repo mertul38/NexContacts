@@ -1,5 +1,8 @@
 package com.example.nexcontacts.ui.contact_profile
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -10,10 +13,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.nexcontacts.ui.common_components.CommonInputInfoSection
 import com.example.nexcontacts.ui.common_components.CommonInputPhotoSection
+import com.example.nexcontacts.ui.common_components.CommonPhotoPickerBottomSheet
+import com.example.nexcontacts.ui.contact_profile.components.topbar.DeleteModalSheet
 import com.example.nexcontacts.ui.contacts.contact_profile.components.ProfileTopBar
 import com.example.nexcontacts.ui.theme.AppTheme
+import com.example.nexcontacts.utils.ImageUtils
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     userId: String,
@@ -47,6 +52,23 @@ fun ProfileScreen(
 
     LaunchedEffect(userId) {
         viewModel.loadUser(userId)
+    }
+
+    // CAMERA launcher
+    val cameraUri = remember { mutableStateOf<Uri?>(null) }
+    val cameraLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success && cameraUri.value != null) {
+            viewModel.updatePhoto(cameraUri.value.toString())
+        }
+    }
+
+    // GALLERY launcher
+    val galleryLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri ->
+        uri?.let { viewModel.updatePhoto(it.toString()) }
     }
 
     Scaffold(
@@ -85,10 +107,11 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             CommonInputPhotoSection(
-                photoUri = user.profileImageUrl,
+                photoUri = state.newPhotoUri ?: user.remoteImageUrl,
                 editMode = state.editMode,
                 onPhotoClick = { showPhotoPicker = true }
             )
+
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -106,61 +129,42 @@ fun ProfileScreen(
 
     // --- REMOVE SHEET ---
     if (showRemoveSheet && user != null) {
-        ModalBottomSheet(
-            onDismissRequest = { showRemoveSheet = false }
-        ) {
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-
-                Text("Delete Contact?", style = MaterialTheme.typography.titleLarge)
-
-                Spacer(Modifier.height(12.dp))
-
-                Text(
-                    "Are you sure you want to delete this contact?",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-                Spacer(Modifier.height(24.dp))
-
-                Button(
-                    onClick = {
-                        viewModel.removeUser(
-                            user.id,
-                            onSuccess = {
-                                showRemoveSheet = false
-                                onCancel()
-                            },
-                            onError = {
-                                showRemoveSheet = false
-                            }
-                        )
+        DeleteModalSheet(
+            onDeleteClicked = {
+                viewModel.removeUser(
+                    user.id,
+                    onSuccess = {
+                        showRemoveSheet = false
+                        onCancel()
                     },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.error
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Delete")
-                }
-
-                Spacer(Modifier.height(12.dp))
-
-                OutlinedButton(
-                    onClick = { showRemoveSheet = false },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Cancel")
-                }
-
-                Spacer(Modifier.height(32.dp))
+                    onError = {
+                        showRemoveSheet = false
+                    }
+                )
+            },
+            onCancelClicked = {
+                showRemoveSheet = false
+            },
+            onDismissRequest = {
+                showRemoveSheet = false
             }
-        }
+        )
     }
+
+    CommonPhotoPickerBottomSheet(
+        show = showPhotoPicker,
+        onDismiss = { showPhotoPicker = false },
+        onCamera = {
+            val uri = ImageUtils.createImageUri(context)
+            cameraUri.value = uri
+            cameraLauncher.launch(uri)
+        },
+        onGallery = {
+            galleryLauncher.launch("image/*")
+        },
+        onCancel = { showPhotoPicker = false }
+    )
+
+
 }
 

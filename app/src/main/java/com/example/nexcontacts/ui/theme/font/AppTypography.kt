@@ -14,7 +14,9 @@ data class AppTypography(
     val bodyMedium: TextStyle,
     val labelLarge: TextStyle,
     val labelMedium: TextStyle,
-    val labelSmall: TextStyle
+    val labelSmall: TextStyle,
+    val labelMedSmall: TextStyle,
+    val bodySmall: TextStyle
 )
 
 val LightTypography = AppTypography(
@@ -48,6 +50,11 @@ val LightTypography = AppTypography(
         fontSize = 16.sp,
         fontWeight = FontWeight.Medium
     ),
+    bodySmall = TextStyle(
+        fontFamily = Mulish,
+        fontSize = 16.sp,
+        fontWeight = FontWeight.SemiBold
+    ),
     labelLarge = TextStyle(
         fontFamily = Mulish,
         fontSize = 14.sp,
@@ -57,6 +64,11 @@ val LightTypography = AppTypography(
         fontFamily = Mulish,
         fontSize = 14.sp,
         fontWeight = FontWeight.SemiBold
+    ),
+    labelMedSmall = TextStyle(
+        fontFamily = Mulish,
+        fontSize = 14.sp,
+        fontWeight = FontWeight.Medium
     ),
     labelSmall = TextStyle(
         fontFamily = Mulish,

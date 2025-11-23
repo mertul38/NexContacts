@@ -64,14 +64,14 @@ fun AddContactScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // TOP BAR
+            val context = LocalContext.current
             AddContactTopBar(
                 onCancel = onCancel,
                 onDone = {
                     viewModel.onDone(
+                        context = context, // burada gönderiyoruz
                         onSuccess = onDone,
-                        onError = { msg ->
-                            scope.launch { snackbarHostState.showSnackbar(msg) }
-                        }
+                        onError = { msg -> scope.launch { snackbarHostState.showSnackbar(msg) } }
                     )
                 }
             )
@@ -101,24 +101,18 @@ fun AddContactScreen(
     }
 
     // PHOTO PICKER BOTTOM SHEET
-    if (showPhotoPicker) {
-        ModalBottomSheet(
-            onDismissRequest = { showPhotoPicker = false }
-        ) {
-            CommonPhotoPickerBottomSheet(
-                onCamera = {
-                    val uri = ImageUtils.createImageUri(context)
-                    cameraUri.value = uri
-                    cameraLauncher.launch(uri)
-                    showPhotoPicker = false
-                },
-                onGallery = {
-                    galleryLauncher.launch("image/*")
-                    showPhotoPicker = false
-                },
-                onCancel = { showPhotoPicker = false }
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-        }
-    }
+    CommonPhotoPickerBottomSheet(
+        show = showPhotoPicker,
+        onDismiss = { showPhotoPicker = false },
+        onCamera = {
+            val uri = ImageUtils.createImageUri(context)
+            cameraUri.value = uri
+            cameraLauncher.launch(uri)
+        },
+        onGallery = {
+            galleryLauncher.launch("image/*")
+        },
+        onCancel = { showPhotoPicker = false }
+    )
+
 }

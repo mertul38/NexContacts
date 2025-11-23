@@ -1,9 +1,10 @@
-import com.example.nexcontacts.data.remote.dto.UserDto
+import com.example.nexcontacts.domain.model.User
 
 data class ContactsState(
     val search: String = "",
-    val users: List<UserDto> = emptyList(),
-    val groupedUsers: Map<Char, List<UserDto>> = emptyMap(),
+    val users: List<User> = emptyList(),
+    val groupedUsers: Map<Char, List<User>> = emptyMap(),
     val error: String? = null,
+    val isLoading: Boolean = false
 )
 

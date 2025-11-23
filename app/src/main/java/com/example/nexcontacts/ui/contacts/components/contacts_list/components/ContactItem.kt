@@ -8,12 +8,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.nexcontacts.data.remote.dto.UserDto
+import com.example.nexcontacts.domain.model.User
 import com.example.nexcontacts.ui.theme.AppTheme
 
 @Composable
 fun ContactItem(
-    user: UserDto,
-    onClick: (UserDto) -> Unit
+    user: User,
+    onClick: (User) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -23,9 +24,11 @@ fun ContactItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         ContactAvatar(
-            imageUrl = user.profileImageUrl,
+            localPath = user.localImagePath,
+            remoteUrl = user.remoteImageUrl,
             firstName = user.firstName
         )
+
 
         Spacer(modifier = Modifier.width(10.dp))
 

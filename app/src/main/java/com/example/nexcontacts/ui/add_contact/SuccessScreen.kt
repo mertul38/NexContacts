@@ -5,14 +5,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.delay
 import androidx.navigation.NavController
+import com.airbnb.lottie.compose.*
+import com.example.nexcontacts.R
+import com.example.nexcontacts.ui.theme.AppTheme
+import kotlinx.coroutines.delay
 
 @Composable
 fun SuccessScreen(navController: NavController) {
 
-    // 2 saniye bekle → Contacts'a dön
+    // Navigate to Contacts after 2 seconds
     LaunchedEffect(Unit) {
         delay(2000)
         navController.navigate("contacts") {
@@ -20,13 +24,48 @@ fun SuccessScreen(navController: NavController) {
         }
     }
 
+    // Load Lottie animation (Done.json in res/raw)
+    val composition by rememberLottieComposition(
+        LottieCompositionSpec.RawRes(R.raw.done)   // <-- your Done.json file
+    )
+
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = 1,     // play once
+        speed = 2.0f
+    )
+
+    // UI Layout
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = "Successful",
-            fontSize = 28.sp
-        )
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            // Lottie animation
+            LottieAnimation(
+                composition = composition,
+                progress = progress,
+                modifier = Modifier.size(180.dp)
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text(
+                text = "All Done!",
+                style = AppTheme.typography.headlineLarge,
+                color = AppTheme.colors.textFifth
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "New contact saved \uD83C\uDF89",
+                style = AppTheme.typography.bodyMedium,
+                color = AppTheme.colors.textSecondary
+            )
+        }
     }
 }

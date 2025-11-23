@@ -1,56 +1,63 @@
 package com.example.nexcontacts.ui.contacts
 
 import ContactsState
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.nexcontacts.data.remote.ApiResult
-import com.example.nexcontacts.data.remote.UserRepository
-import com.example.nexcontacts.data.remote.dto.UserDto
+import com.example.nexcontacts.data.di.ServiceLocator
+import com.example.nexcontacts.domain.model.User
 import kotlinx.coroutines.launch
 
 class ContactsViewModel : ViewModel() {
 
-    private val repo = UserRepository()
+    private val repo = ServiceLocator.userRepository
+
     var state by mutableStateOf(ContactsState())
         private set
+
     var event: ContactsEvent? by mutableStateOf(null)
         private set
 
-    fun loadUsers() {
+    init {
+        loadRemoteUsers()
+    }
+
+    // --------------------------------------------------------
+    // FETCH REMOTE USERS
+    // --------------------------------------------------------
+    private fun loadRemoteUsers() {
         viewModelScope.launch {
-            when (val result = repo.getAllUsers()) {
+            state = state.copy(isLoading = true)
 
-                is ApiResult.Success -> {
-                    val list = result.data
-                    val grouped = list
-                        .sortedBy { it.firstName.lowercase() }
-                        .groupBy { it.firstName.first().uppercaseChar() }
+            val users = repo.getUsers()
 
-                    state = state.copy(
-                        users = list,
-                        groupedUsers = grouped
-                    )
-                }
+            state = state.copy(
+                users = users,
+                isLoading = false
+            )
 
-                is ApiResult.Error -> {
-                    state = state.copy(error = result.message)
-                }
-            }
+            applySearchAndGrouping(state.search, users)
         }
     }
 
+    // --------------------------------------------------------
+    // SEARCH
+    // --------------------------------------------------------
     fun onSearchChanged(query: String) {
         state = state.copy(search = query)
+        applySearchAndGrouping(query, state.users)
+    }
 
+    private fun applySearchAndGrouping(query: String, users: List<User>) {
         val filtered = if (query.isBlank()) {
-            state.users
+            users
         } else {
-            state.users.filter {
-                "${it.firstName} ${it.lastName}".lowercase().contains(query.lowercase())
+            users.filter {
+                "${it.firstName} ${it.lastName}"
+                    .lowercase()
+                    .contains(query.lowercase())
             }
         }
 
@@ -58,15 +65,24 @@ class ContactsViewModel : ViewModel() {
             .sortedBy { it.firstName.lowercase() }
             .groupBy { it.firstName.first().uppercaseChar() }
 
-        state = state.copy(groupedUsers = grouped)
+        state = state.copy(
+            groupedUsers = grouped
+        )
     }
 
-    fun onContactClicked(userDto: UserDto) {
-        event = ContactsEvent.NavigateToProfile(userDto.id)
+    // --------------------------------------------------------
+    // NAVIGATION
+    // --------------------------------------------------------
+    fun onContactClicked(user: User) {
+        event = ContactsEvent.NavigateToProfile(user.id)
     }
 
     fun consumeEvent() {
         event = null
     }
-}
 
+    fun refresh() {
+        loadRemoteUsers()
+    }
+
+}

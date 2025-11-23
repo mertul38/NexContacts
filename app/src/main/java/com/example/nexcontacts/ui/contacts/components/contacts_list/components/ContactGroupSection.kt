@@ -8,12 +8,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.nexcontacts.data.remote.dto.UserDto
+import com.example.nexcontacts.domain.model.User
 
 @Composable
 fun ContactGroupSection(
     letter: Char,
-    users: List<UserDto>,
-    onContactClicked: (UserDto) -> Unit
+    users: List<User>,
+    onContactClicked: (User) -> Unit
 ) {
     Column(
         modifier = Modifier
